@@ -44,31 +44,31 @@ exports.create = async (req, res, next) => {
     if (req.query.user == currentUser.id) {
       throw new APIError({
         message: "Something went wrong",
-        status: httpStatus.BAD_REQUEST
+        status: httpStatus.BAD_REQUEST,
       });
     }
     // check contact exists
     const checkContact = await Contact.findOne({
       $or: [
         {
-          $and: [{ userId: currentUser.id }, { contactId: contactUser.id }]
+          $and: [{ userId: currentUser.id }, { contactId: contactUser.id }],
         },
         {
-          $and: [{ userId: contactUser.id }, { contactId: currentUser.id }]
-        }
-      ]
+          $and: [{ userId: contactUser.id }, { contactId: currentUser.id }],
+        },
+      ],
     });
 
     if (checkContact) {
       throw new APIError({
         message: "Contact already exist",
-        status: httpStatus.BAD_REQUEST
+        status: httpStatus.BAD_REQUEST,
       });
     }
 
     const contact = new Contact({
       userId: currentUser.id,
-      contactId: contactUser.id
+      contactId: contactUser.id,
     });
     const savedContact = await contact.save();
     res.status(httpStatus.CREATED);
@@ -112,12 +112,12 @@ exports.update = async (req, res, next) => {
     const contact = await Contact.findOne({
       $or: [
         {
-          $and: [{ userId: currentUser.id }, { contactId: contactUser.id }]
+          $and: [{ userId: currentUser.id }, { contactId: contactUser.id }],
         },
         {
-          $and: [{ userId: contactUser.id }, { contactId: currentUser.id }]
-        }
-      ]
+          $and: [{ userId: contactUser.id }, { contactId: currentUser.id }],
+        },
+      ],
     });
     if (contact) {
       contact.status = true;
@@ -127,7 +127,7 @@ exports.update = async (req, res, next) => {
     } else {
       throw new APIError({
         message: "Contact does not exist",
-        status: httpStatus.BAD_REQUEST
+        status: httpStatus.BAD_REQUEST,
       });
     }
   } catch (error) {
@@ -154,20 +154,20 @@ exports.list = async (req, res, next) => {
     let options = {};
     if (type === "request") {
       options = {
-        $and: [{ status: false }, { contactId: currentUserId }]
+        $and: [{ status: false }, { contactId: currentUserId }],
       };
     } else if (type === "requestsent") {
       options = {
-        $and: [{ status: false }, { userId: currentUserId }]
+        $and: [{ status: false }, { userId: currentUserId }],
       };
     } else {
       options = {
         $and: [
           {
-            $or: [{ contactId: currentUserId }, { userId: currentUserId }]
+            $or: [{ contactId: currentUserId }, { userId: currentUserId }],
           },
-          { status: true }
-        ]
+          { status: true },
+        ],
       };
     }
     const contacts = await Contact.find(options)
@@ -176,7 +176,7 @@ exports.list = async (req, res, next) => {
 
     // get list users
     let responseList = [];
-    contacts.forEach(item => {
+    contacts.forEach((item) => {
       if (item.userId.id == currentUserId) {
         responseList.push(item.contactId.transform());
       } else if (item.contactId.id == currentUserId) {
@@ -203,23 +203,23 @@ exports.remove = async (req, res, next) => {
     const contact = await Contact.findOne({
       $or: [
         {
-          $and: [{ userId: currentUser.id }, { contactId: contactUser.id }]
+          $and: [{ userId: currentUser.id }, { contactId: contactUser.id }],
         },
         {
-          $and: [{ userId: contactUser.id }, { contactId: currentUser.id }]
-        }
-      ]
+          $and: [{ userId: contactUser.id }, { contactId: currentUser.id }],
+        },
+      ],
     });
 
     if (contact) {
       contact
         .remove()
         .then(() => res.status(httpStatus.OK).end())
-        .catch(e => next(e));
+        .catch((e) => next(e));
     } else {
       throw new APIError({
         message: "Contact does not exist",
-        status: httpStatus.BAD_REQUEST
+        status: httpStatus.BAD_REQUEST,
       });
     }
   } catch (error) {

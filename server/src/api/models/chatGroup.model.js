@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
-const APIError = require('../utils/APIError')
-const httpStatus = require('http-status')
+const mongoose = require("mongoose");
+const APIError = require("../utils/APIError");
+const httpStatus = require("http-status");
 let schema = mongoose.Schema;
 
 let chatGroupSchema = new schema(
@@ -18,14 +18,20 @@ let chatGroupSchema = new schema(
   { timestamps: true }
 );
 
-
 /**
  * Methods
  */
 chatGroupSchema.method({
   transform() {
     const transformed = {};
-    const fields = ["id","picture", "name", "members", "createdAt", "updatedAt"];
+    const fields = [
+      "id",
+      "picture",
+      "name",
+      "members",
+      "createdAt",
+      "updatedAt",
+    ];
 
     fields.forEach((field) => {
       transformed[field] = this[field];
@@ -33,7 +39,6 @@ chatGroupSchema.method({
 
     return transformed;
   },
-
 });
 
 /**
@@ -58,7 +63,7 @@ chatGroupSchema.statics = {
       }
 
       throw new APIError({
-        message: 'ChatGroup does not exist',
+        message: "ChatGroup does not exist",
         status: httpStatus.NOT_FOUND,
       });
     } catch (error) {
@@ -73,22 +78,20 @@ chatGroupSchema.statics = {
    * @param {number} limit - Limit number of chatGroups to be returned.
    * @returns {Promise<ChatGroup[]>}
    */
-  async list({
-    skip=0, userId, limit=12
-  }) {
-       return this.find({
-         members: {
-           $in: userId,
-         },
-       })
-       .skip(+skip).limit(limit)
-         .sort({ updatedAt: -1 })
-         .exec();
-     }
+  async list({ skip = 0, userId, limit = 12 }) {
+    return this.find({
+      members: {
+        $in: userId,
+      },
+    })
+      .skip(+skip)
+      .limit(limit)
+      .sort({ updatedAt: -1 })
+      .exec();
+  },
 };
 
 /**
  * @typedef ChatGroup
  */
-module.exports = mongoose.model('ChatGroup', chatGroupSchema);
-
+module.exports = mongoose.model("ChatGroup", chatGroupSchema);

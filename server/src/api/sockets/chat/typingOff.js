@@ -1,7 +1,7 @@
 const { emitNotifyToArray } = require("../helper");
 
 let typingOff = (io, data, clients, user) => {
-//   console.log(data);
+  //   console.log(data);
   if (data.conversationType === "ChatGroup") {
     // lọc danh sách, bỏ id của người hiện tại
     const receivers = data.receiver.members.filter(

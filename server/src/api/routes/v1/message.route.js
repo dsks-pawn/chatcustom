@@ -26,19 +26,18 @@ router
 
 router
   .route("/")
-  // Lấy danh sách cuộc trò chuyện và tin nhắn cuối cùng 
+  // Lấy danh sách cuộc trò chuyện và tin nhắn cuối cùng
   .get(authorize(LOGGED_USER), /*validate(list),*/ controller.list)
-  // Tạo mới tin nhắn 
+  // Tạo mới tin nhắn
   .post(authorize(LOGGED_USER), validate(createMessage), controller.create);
 
-router.route("/photos").post(authorize(LOGGED_USER),controller.addPhotos);
-router.route("/files").post(authorize(LOGGED_USER),controller.addFiles);
+router.route("/photos").post(authorize(LOGGED_USER), controller.addPhotos);
+router.route("/files").post(authorize(LOGGED_USER), controller.addFiles);
 
 router
   .route("/:receiverId")
 
   // Lấy thông tin cuộc trò chuyện dựa vào id
   .get(authorize(LOGGED_USER), validate(getConversation), controller.get);
-
 
 module.exports = router;

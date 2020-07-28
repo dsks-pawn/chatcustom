@@ -1,14 +1,14 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-unused-expressions */
-const request = require('supertest');
-const httpStatus = require('http-status');
-const { expect } = require('chai');
-const sinon = require('sinon');
-const bcrypt = require('bcryptjs');
-const { some, omitBy, isNil } = require('lodash');
-const app = require('../../../index');
-const User = require('../../models/user.model');
-const JWT_EXPIRATION = require('../../../config/vars').jwtExpirationInterval;
+const request = require("supertest");
+const httpStatus = require("http-status");
+const { expect } = require("chai");
+const sinon = require("sinon");
+const bcrypt = require("bcryptjs");
+const { some, omitBy, isNil } = require("lodash");
+const app = require("../../../index");
+const User = require("../../models/user.model");
+const JWT_EXPIRATION = require("../../../config/vars").jwtExpirationInterval;
 
 /**
  * root level hooks
@@ -27,57 +27,59 @@ async function format(user) {
   return omitBy(dbUser, isNil);
 }
 
-describe('Users API', async () => {
+describe("Users API", async () => {
   let adminAccessToken;
   let userAccessToken;
   let dbUsers;
   let user;
   let admin;
 
-  const password = '123456';
+  const password = "123456";
   const passwordHashed = await bcrypt.hash(password, 1);
 
   beforeEach(async () => {
     dbUsers = {
       branStark: {
-        email: 'branstark@gmail.com',
+        email: "branstark@gmail.com",
         password: passwordHashed,
-        name: 'Bran Stark',
-        role: 'admin',
+        name: "Bran Stark",
+        role: "admin",
       },
       jonSnow: {
-        email: 'jonsnow@gmail.com',
+        email: "jonsnow@gmail.com",
         password: passwordHashed,
-        name: 'Jon Snow',
+        name: "Jon Snow",
       },
     };
 
     user = {
-      email: 'sousa.dfs@gmail.com',
+      email: "sousa.dfs@gmail.com",
       password,
-      name: 'Daniel Sousa',
+      name: "Daniel Sousa",
     };
 
     admin = {
-      email: 'sousa.dfs@gmail.com',
+      email: "sousa.dfs@gmail.com",
       password,
-      name: 'Daniel Sousa',
-      role: 'admin',
+      name: "Daniel Sousa",
+      role: "admin",
     };
 
     await User.deleteMany({});
     await User.insertMany([dbUsers.branStark, dbUsers.jonSnow]);
     dbUsers.branStark.password = password;
     dbUsers.jonSnow.password = password;
-    adminAccessToken = (await User.findAndGenerateToken(dbUsers.branStark)).accessToken;
-    userAccessToken = (await User.findAndGenerateToken(dbUsers.jonSnow)).accessToken;
+    adminAccessToken = (await User.findAndGenerateToken(dbUsers.branStark))
+      .accessToken;
+    userAccessToken = (await User.findAndGenerateToken(dbUsers.jonSnow))
+      .accessToken;
   });
 
-  describe('POST /v1/users', () => {
-    it('should create a new user when request is ok', () => {
+  describe("POST /v1/users", () => {
+    it("should create a new user when request is ok", () => {
       return request(app)
-        .post('/v1/users')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .post("/v1/users")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .send(admin)
         .expect(httpStatus.CREATED)
         .then((res) => {
@@ -88,87 +90,89 @@ describe('Users API', async () => {
 
     it('should create a new user and set default role to "user"', () => {
       return request(app)
-        .post('/v1/users')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .post("/v1/users")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .send(user)
         .expect(httpStatus.CREATED)
         .then((res) => {
-          expect(res.body.role).to.be.equal('user');
+          expect(res.body.role).to.be.equal("user");
         });
     });
 
-    it('should report error when email already exists', () => {
+    it("should report error when email already exists", () => {
       user.email = dbUsers.branStark.email;
 
       return request(app)
-        .post('/v1/users')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .post("/v1/users")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .send(user)
         .expect(httpStatus.CONFLICT)
         .then((res) => {
           const { field } = res.body.errors[0];
           const { location } = res.body.errors[0];
           const { messages } = res.body.errors[0];
-          expect(field).to.be.equal('email');
-          expect(location).to.be.equal('body');
+          expect(field).to.be.equal("email");
+          expect(location).to.be.equal("body");
           expect(messages).to.include('"email" already exists');
         });
     });
 
-    it('should report error when email is not provided', () => {
+    it("should report error when email is not provided", () => {
       delete user.email;
 
       return request(app)
-        .post('/v1/users')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .post("/v1/users")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .send(user)
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
           const { field } = res.body.errors[0];
           const { location } = res.body.errors[0];
           const { messages } = res.body.errors[0];
-          expect(field).to.be.equal('email');
-          expect(location).to.be.equal('body');
+          expect(field).to.be.equal("email");
+          expect(location).to.be.equal("body");
           expect(messages).to.include('"email" is required');
         });
     });
 
-    it('should report error when password length is less than 6', () => {
-      user.password = '12345';
+    it("should report error when password length is less than 6", () => {
+      user.password = "12345";
 
       return request(app)
-        .post('/v1/users')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .post("/v1/users")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .send(user)
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
           const { field } = res.body.errors[0];
           const { location } = res.body.errors[0];
           const { messages } = res.body.errors[0];
-          expect(field).to.be.equal('password');
-          expect(location).to.be.equal('body');
-          expect(messages).to.include('"password" length must be at least 6 characters long');
+          expect(field).to.be.equal("password");
+          expect(location).to.be.equal("body");
+          expect(messages).to.include(
+            '"password" length must be at least 6 characters long'
+          );
         });
     });
 
-    it('should report error when logged user is not an admin', () => {
+    it("should report error when logged user is not an admin", () => {
       return request(app)
-        .post('/v1/users')
-        .set('Authorization', `Bearer ${userAccessToken}`)
+        .post("/v1/users")
+        .set("Authorization", `Bearer ${userAccessToken}`)
         .send(user)
         .expect(httpStatus.FORBIDDEN)
         .then((res) => {
           expect(res.body.code).to.be.equal(httpStatus.FORBIDDEN);
-          expect(res.body.message).to.be.equal('Forbidden');
+          expect(res.body.message).to.be.equal("Forbidden");
         });
     });
   });
 
-  describe('GET /v1/users', () => {
-    it('should get all users', () => {
+  describe("GET /v1/users", () => {
+    it("should get all users", () => {
       return request(app)
-        .get('/v1/users')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .get("/v1/users")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .expect(httpStatus.OK)
         .then(async (res) => {
           const bran = await format(dbUsers.branStark);
@@ -180,33 +184,33 @@ describe('Users API', async () => {
           const includesBranStark = some(res.body, bran);
           const includesjonSnow = some(res.body, john);
 
-          expect(res.body).to.be.an('array');
+          expect(res.body).to.be.an("array");
           expect(res.body).to.have.lengthOf(2);
           expect(includesBranStark).to.be.true;
           expect(includesjonSnow).to.be.true;
         });
     });
 
-    it('should get all users with pagination', () => {
+    it("should get all users with pagination", () => {
       return request(app)
-        .get('/v1/users')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .get("/v1/users")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .query({ page: 2, perPage: 1 })
         .expect(httpStatus.OK)
         .then(async (res) => {
           delete dbUsers.jonSnow.password;
 
-          expect(res.body).to.be.an('array');
-          expect(res.body[0]).to.be.an('object');
+          expect(res.body).to.be.an("array");
+          expect(res.body[0]).to.be.an("object");
           expect(res.body).to.have.lengthOf(1);
-          expect(res.body[0].name).to.be.equal('Jon Snow');
+          expect(res.body[0].name).to.be.equal("Jon Snow");
         });
     });
 
-    it('should filter users', () => {
+    it("should filter users", () => {
       return request(app)
-        .get('/v1/users')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .get("/v1/users")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .query({ email: dbUsers.jonSnow.email })
         .expect(httpStatus.OK)
         .then(async (res) => {
@@ -218,24 +222,24 @@ describe('Users API', async () => {
 
           const includesjonSnow = some(res.body, john);
 
-          expect(res.body).to.be.an('array');
+          expect(res.body).to.be.an("array");
           expect(res.body).to.have.lengthOf(1);
           expect(includesjonSnow).to.be.true;
         });
     });
 
-    it('should report error when pagination\'s parameters are not a number', () => {
+    it("should report error when pagination's parameters are not a number", () => {
       return request(app)
-        .get('/v1/users')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
-        .query({ page: '?', perPage: 'whaat' })
+        .get("/v1/users")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
+        .query({ page: "?", perPage: "whaat" })
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
           const { field } = res.body.errors[0];
           const { location } = res.body.errors[0];
           const { messages } = res.body.errors[0];
-          expect(field).to.be.equal('page');
-          expect(location).to.be.equal('query');
+          expect(field).to.be.equal("page");
+          expect(location).to.be.equal("query");
           expect(messages).to.include('"page" must be a number');
           return Promise.resolve(res);
         })
@@ -243,32 +247,32 @@ describe('Users API', async () => {
           const { field } = res.body.errors[1];
           const { location } = res.body.errors[1];
           const { messages } = res.body.errors[1];
-          expect(field).to.be.equal('perPage');
-          expect(location).to.be.equal('query');
+          expect(field).to.be.equal("perPage");
+          expect(location).to.be.equal("query");
           expect(messages).to.include('"perPage" must be a number');
         });
     });
 
-    it('should report error if logged user is not an admin', () => {
+    it("should report error if logged user is not an admin", () => {
       return request(app)
-        .get('/v1/users')
-        .set('Authorization', `Bearer ${userAccessToken}`)
+        .get("/v1/users")
+        .set("Authorization", `Bearer ${userAccessToken}`)
         .expect(httpStatus.FORBIDDEN)
         .then((res) => {
           expect(res.body.code).to.be.equal(httpStatus.FORBIDDEN);
-          expect(res.body.message).to.be.equal('Forbidden');
+          expect(res.body.message).to.be.equal("Forbidden");
         });
     });
   });
 
-  describe('GET /v1/users/:userId', () => {
-    it('should get user', async () => {
+  describe("GET /v1/users/:userId", () => {
+    it("should get user", async () => {
       const id = (await User.findOne({}))._id;
       delete dbUsers.branStark.password;
 
       return request(app)
         .get(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .expect(httpStatus.OK)
         .then((res) => {
           expect(res.body).to.include(dbUsers.branStark);
@@ -277,126 +281,128 @@ describe('Users API', async () => {
 
     it('should report error "User does not exist" when user does not exists', () => {
       return request(app)
-        .get('/v1/users/56c787ccc67fc16ccc1a5e92')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .get("/v1/users/56c787ccc67fc16ccc1a5e92")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .expect(httpStatus.NOT_FOUND)
         .then((res) => {
           expect(res.body.code).to.be.equal(404);
-          expect(res.body.message).to.be.equal('User does not exist');
+          expect(res.body.message).to.be.equal("User does not exist");
         });
     });
 
     it('should report error "User does not exist" when id is not a valid ObjectID', () => {
       return request(app)
-        .get('/v1/users/palmeiras1914')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .get("/v1/users/palmeiras1914")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .expect(httpStatus.NOT_FOUND)
         .then((res) => {
           expect(res.body.code).to.be.equal(404);
-          expect(res.body.message).to.equal('User does not exist');
+          expect(res.body.message).to.equal("User does not exist");
         });
     });
 
-    it('should report error when logged user is not the same as the requested one', async () => {
+    it("should report error when logged user is not the same as the requested one", async () => {
       const id = (await User.findOne({ email: dbUsers.branStark.email }))._id;
 
       return request(app)
         .get(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${userAccessToken}`)
+        .set("Authorization", `Bearer ${userAccessToken}`)
         .expect(httpStatus.FORBIDDEN)
         .then((res) => {
           expect(res.body.code).to.be.equal(httpStatus.FORBIDDEN);
-          expect(res.body.message).to.be.equal('Forbidden');
+          expect(res.body.message).to.be.equal("Forbidden");
         });
     });
   });
 
-  describe('PUT /v1/users/:userId', () => {
-    it('should replace user', async () => {
+  describe("PUT /v1/users/:userId", () => {
+    it("should replace user", async () => {
       delete dbUsers.branStark.password;
       const id = (await User.findOne(dbUsers.branStark))._id;
 
       return request(app)
         .put(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .send(user)
         .expect(httpStatus.OK)
         .then((res) => {
           delete user.password;
           expect(res.body).to.include(user);
-          expect(res.body.role).to.be.equal('user');
+          expect(res.body.role).to.be.equal("user");
         });
     });
 
-    it('should report error when email is not provided', async () => {
+    it("should report error when email is not provided", async () => {
       const id = (await User.findOne({}))._id;
       delete user.email;
 
       return request(app)
         .put(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .send(user)
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
           const { field } = res.body.errors[0];
           const { location } = res.body.errors[0];
           const { messages } = res.body.errors[0];
-          expect(field).to.be.equal('email');
-          expect(location).to.be.equal('body');
+          expect(field).to.be.equal("email");
+          expect(location).to.be.equal("body");
           expect(messages).to.include('"email" is required');
         });
     });
 
-    it('should report error user when password length is less than 6', async () => {
+    it("should report error user when password length is less than 6", async () => {
       const id = (await User.findOne({}))._id;
-      user.password = '12345';
+      user.password = "12345";
 
       return request(app)
         .put(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .send(user)
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
           const { field } = res.body.errors[0];
           const { location } = res.body.errors[0];
           const { messages } = res.body.errors[0];
-          expect(field).to.be.equal('password');
-          expect(location).to.be.equal('body');
-          expect(messages).to.include('"password" length must be at least 6 characters long');
+          expect(field).to.be.equal("password");
+          expect(location).to.be.equal("body");
+          expect(messages).to.include(
+            '"password" length must be at least 6 characters long'
+          );
         });
     });
 
     it('should report error "User does not exist" when user does not exists', () => {
       return request(app)
-        .put('/v1/users/palmeiras1914')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .put("/v1/users/palmeiras1914")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .expect(httpStatus.NOT_FOUND)
         .then((res) => {
           expect(res.body.code).to.be.equal(404);
-          expect(res.body.message).to.be.equal('User does not exist');
+          expect(res.body.message).to.be.equal("User does not exist");
         });
     });
 
-    it('should report error when logged user is not the same as the requested one', async () => {
+    it("should report error when logged user is not the same as the requested one", async () => {
       const id = (await User.findOne({ email: dbUsers.branStark.email }))._id;
 
       return request(app)
         .put(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${userAccessToken}`)
+        .set("Authorization", `Bearer ${userAccessToken}`)
         .expect(httpStatus.FORBIDDEN)
         .then((res) => {
           expect(res.body.code).to.be.equal(httpStatus.FORBIDDEN);
-          expect(res.body.message).to.be.equal('Forbidden');
+          expect(res.body.message).to.be.equal("Forbidden");
         });
     });
 
-    it('should not replace the role of the user (not admin)', async () => {
+    it("should not replace the role of the user (not admin)", async () => {
       const id = (await User.findOne({ email: dbUsers.jonSnow.email }))._id;
-      const role = 'admin';
+      const role = "admin";
 
       return request(app)
         .put(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${userAccessToken}`)
+        .set("Authorization", `Bearer ${userAccessToken}`)
         .send(admin)
         .expect(httpStatus.OK)
         .then((res) => {
@@ -405,15 +411,15 @@ describe('Users API', async () => {
     });
   });
 
-  describe('PATCH /v1/users/:userId', () => {
-    it('should update user', async () => {
+  describe("PATCH /v1/users/:userId", () => {
+    it("should update user", async () => {
       delete dbUsers.branStark.password;
       const id = (await User.findOne(dbUsers.branStark))._id;
       const { name } = user;
 
       return request(app)
         .patch(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .send({ name })
         .expect(httpStatus.OK)
         .then((res) => {
@@ -422,13 +428,13 @@ describe('Users API', async () => {
         });
     });
 
-    it('should not update user when no parameters were given', async () => {
+    it("should not update user when no parameters were given", async () => {
       delete dbUsers.branStark.password;
       const id = (await User.findOne(dbUsers.branStark))._id;
 
       return request(app)
         .patch(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .send()
         .expect(httpStatus.OK)
         .then((res) => {
@@ -438,35 +444,35 @@ describe('Users API', async () => {
 
     it('should report error "User does not exist" when user does not exists', () => {
       return request(app)
-        .patch('/v1/users/palmeiras1914')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .patch("/v1/users/palmeiras1914")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .expect(httpStatus.NOT_FOUND)
         .then((res) => {
           expect(res.body.code).to.be.equal(404);
-          expect(res.body.message).to.be.equal('User does not exist');
+          expect(res.body.message).to.be.equal("User does not exist");
         });
     });
 
-    it('should report error when logged user is not the same as the requested one', async () => {
+    it("should report error when logged user is not the same as the requested one", async () => {
       const id = (await User.findOne({ email: dbUsers.branStark.email }))._id;
 
       return request(app)
         .patch(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${userAccessToken}`)
+        .set("Authorization", `Bearer ${userAccessToken}`)
         .expect(httpStatus.FORBIDDEN)
         .then((res) => {
           expect(res.body.code).to.be.equal(httpStatus.FORBIDDEN);
-          expect(res.body.message).to.be.equal('Forbidden');
+          expect(res.body.message).to.be.equal("Forbidden");
         });
     });
 
-    it('should not update the role of the user (not admin)', async () => {
+    it("should not update the role of the user (not admin)", async () => {
       const id = (await User.findOne({ email: dbUsers.jonSnow.email }))._id;
-      const role = 'admin';
+      const role = "admin";
 
       return request(app)
         .patch(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${userAccessToken}`)
+        .set("Authorization", `Bearer ${userAccessToken}`)
         .send({ role })
         .expect(httpStatus.OK)
         .then((res) => {
@@ -475,15 +481,15 @@ describe('Users API', async () => {
     });
   });
 
-  describe('DELETE /v1/users', () => {
-    it('should delete user', async () => {
+  describe("DELETE /v1/users", () => {
+    it("should delete user", async () => {
       const id = (await User.findOne({}))._id;
 
       return request(app)
         .delete(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .expect(httpStatus.NO_CONTENT)
-        .then(() => request(app).get('/v1/users'))
+        .then(() => request(app).get("/v1/users"))
         .then(async () => {
           const users = await User.find({});
           expect(users).to.have.lengthOf(1);
@@ -492,58 +498,60 @@ describe('Users API', async () => {
 
     it('should report error "User does not exist" when user does not exists', () => {
       return request(app)
-        .delete('/v1/users/palmeiras1914')
-        .set('Authorization', `Bearer ${adminAccessToken}`)
+        .delete("/v1/users/palmeiras1914")
+        .set("Authorization", `Bearer ${adminAccessToken}`)
         .expect(httpStatus.NOT_FOUND)
         .then((res) => {
           expect(res.body.code).to.be.equal(404);
-          expect(res.body.message).to.be.equal('User does not exist');
+          expect(res.body.message).to.be.equal("User does not exist");
         });
     });
 
-    it('should report error when logged user is not the same as the requested one', async () => {
+    it("should report error when logged user is not the same as the requested one", async () => {
       const id = (await User.findOne({ email: dbUsers.branStark.email }))._id;
 
       return request(app)
         .delete(`/v1/users/${id}`)
-        .set('Authorization', `Bearer ${userAccessToken}`)
+        .set("Authorization", `Bearer ${userAccessToken}`)
         .expect(httpStatus.FORBIDDEN)
         .then((res) => {
           expect(res.body.code).to.be.equal(httpStatus.FORBIDDEN);
-          expect(res.body.message).to.be.equal('Forbidden');
+          expect(res.body.message).to.be.equal("Forbidden");
         });
     });
   });
 
-  describe('GET /v1/users/profile', () => {
-    it('should get the logged user\'s info', () => {
+  describe("GET /v1/users/profile", () => {
+    it("should get the logged user's info", () => {
       delete dbUsers.jonSnow.password;
 
       return request(app)
-        .get('/v1/users/profile')
-        .set('Authorization', `Bearer ${userAccessToken}`)
+        .get("/v1/users/profile")
+        .set("Authorization", `Bearer ${userAccessToken}`)
         .expect(httpStatus.OK)
         .then((res) => {
           expect(res.body).to.include(dbUsers.jonSnow);
         });
     });
 
-    it('should report error without stacktrace when accessToken is expired', async () => {
+    it("should report error without stacktrace when accessToken is expired", async () => {
       // fake time
       const clock = sinon.useFakeTimers();
-      const expiredAccessToken = (await User.findAndGenerateToken(dbUsers.branStark)).accessToken;
+      const expiredAccessToken = (
+        await User.findAndGenerateToken(dbUsers.branStark)
+      ).accessToken;
 
       // move clock forward by minutes set in config + 1 minute
-      clock.tick((JWT_EXPIRATION * 60000) + 60000);
+      clock.tick(JWT_EXPIRATION * 60000 + 60000);
 
       return request(app)
-        .get('/v1/users/profile')
-        .set('Authorization', `Bearer ${expiredAccessToken}`)
+        .get("/v1/users/profile")
+        .set("Authorization", `Bearer ${expiredAccessToken}`)
         .expect(httpStatus.UNAUTHORIZED)
         .then((res) => {
           expect(res.body.code).to.be.equal(httpStatus.UNAUTHORIZED);
-          expect(res.body.message).to.be.equal('jwt expired');
-          expect(res.body).to.not.have.a.property('stack');
+          expect(res.body.message).to.be.equal("jwt expired");
+          expect(res.body).to.not.have.a.property("stack");
         });
     });
   });

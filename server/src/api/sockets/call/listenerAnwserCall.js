@@ -1,7 +1,7 @@
 const { emitNotifyToArray } = require("../helper");
 
 let listenerAnswerCall = (io, data, clients, user) => {
-  // listener chấp nhận cuộc gọi 
+  // listener chấp nhận cuộc gọi
   if (clients[data.caller.id]) {
     // b13. Trả lại caller cuộc gọi được chấp nhân
     emitNotifyToArray(

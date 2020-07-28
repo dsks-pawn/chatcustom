@@ -1,4 +1,4 @@
-const {emitNotifyToArray} = require('../helper')
+const { emitNotifyToArray } = require("../helper");
 /**
  * @param {*} io from socket.io library
  */
@@ -9,7 +9,7 @@ let addNewContact = (io, data, clients, user) => {
     picture: user.picture,
     firstname: user.firstname,
     lastname: user.lastname,
-    id: user.id
+    id: user.id,
   };
   // emit notifications
   if (clients[data.contactId]) {

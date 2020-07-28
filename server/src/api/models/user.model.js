@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const httpStatus = require("http-status");
-const { omitBy, isNil } = require("lodash");
 const bcrypt = require("bcryptjs");
 const moment = require("moment-timezone");
 const jwt = require("jwt-simple");
@@ -26,28 +25,35 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       lowercase: true,
+      default: null,
     },
     password: {
       type: String,
       required: true,
       minlength: 6,
       maxlength: 128,
+      default: null,
     },
     firstname: {
       type: String,
       maxlength: 20,
       minlength: 2,
       trim: true,
+      default: null,
     },
     lastname: {
       type: String,
       maxlength: 20,
       minlength: 2,
       trim: true,
+      default: null,
     },
     services: {
-      facebook: String,
-      google: String,
+      type: Object,
+      default: {
+        facebook: null,
+        google: null,
+      },
     },
     role: {
       type: String,
@@ -57,6 +63,7 @@ const userSchema = new mongoose.Schema(
     picture: {
       type: String,
       trim: true,
+      default: null,
     },
   },
   {
@@ -236,7 +243,7 @@ userSchema.statics = {
           firstname: 1,
           lastname: 1,
           picture: 1,
-          id: "$_id"
+          id: "$_id",
         },
       },
       { $match: { $or: [{ fullname: reg }, { fullname1: reg }] } },
@@ -244,7 +251,7 @@ userSchema.statics = {
         $project: {
           fullname: 0,
           fullname1: 0,
-          _id: 0
+          _id: 0,
         },
       },
     ]);

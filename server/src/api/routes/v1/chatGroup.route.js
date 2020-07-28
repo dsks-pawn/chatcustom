@@ -5,22 +5,20 @@ const { authorize, ADMIN, LOGGED_USER } = require("../../middlewares/auth");
 const {
   createChatGroup,
   deleteChatGroup,
-  updateChatGroup,listChatGroup,
+  updateChatGroup,
+  listChatGroup,
   removeMember,
-  addMember
+  addMember,
 } = require("../../validations/chatGroup.validation");
 const router = express.Router();
-/** * Load chatGroup when API with chatGroupId route parameter is hit */ 
-router.param(
-  "chatGroupId",
-  controller.load
-);
+/** * Load chatGroup when API with chatGroupId route parameter is hit */
 
-// Cập nhật ảnh đại diện 
+router.param("chatGroupId", controller.load);
+
+// Cập nhật ảnh đại diện
 router
   .route("/avatar/:chatGroupId")
   .post(authorize(LOGGED_USER), controller.updateAvatar);
-
 
 router
   .route("/")
@@ -35,13 +33,16 @@ router
 
 router
   .route("/:chatGroupId")
-  // lấy thông tin nhóm chat 
-  .get(authorize(LOGGED_USER), controller.get)
- 
-router
-  .route('/member')
-  .patch(authorize(LOGGED_USER), validate(addMember), controller.addMember)
-  .delete(authorize(LOGGED_USER), validate(removeMember), controller.removeMember)
+  // lấy thông tin nhóm chat
+  .get(authorize(LOGGED_USER), controller.get);
 
+router
+  .route("/member")
+  .patch(authorize(LOGGED_USER), validate(addMember), controller.addMember)
+  .delete(
+    authorize(LOGGED_USER),
+    validate(removeMember),
+    controller.removeMember
+  );
 
 module.exports = router;

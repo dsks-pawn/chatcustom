@@ -1,5 +1,17 @@
-const express = require('express'); const validate = require('express-validation'); const controller = require('../../controllers/contact.controller'); const { authorize, ADMIN, LOGGED_USER } = require('../../middlewares/auth'); const { createContact, deleteContact, updateContact } = require('../../validations/contact.validation'); const router = express.Router(); /** * Load contact when API with contactId route parameter is hit */ router.param('contactId', controller.load);
-
+const express = require("express");
+const validate = require("express-validation");
+const controller = require("../../controllers/contact.controller");
+const { authorize, ADMIN, LOGGED_USER } = require("../../middlewares/auth");
+const {
+  createContact,
+  deleteContact,
+  updateContact,
+} = require("../../validations/contact.validation");
+const router = express.Router();
+/** * Load contact when API with contactId route parameter is hit */ router.param(
+  "contactId",
+  controller.load
+);
 
 router
   .route("/")
@@ -96,12 +108,10 @@ router
    * @apiError (Not Found 404)    NotFound     Contact does not exist
    */
   .patch(authorize(LOGGED_USER), validate(updateContact), controller.update);
-  
-
 
 router
-  .route('/:contactId')
-  
+  .route("/:contactId")
+
   /**
    * @api {get} v1/contacts/:id Get Contact
    * @apiDescription Get contact information
@@ -150,9 +160,9 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only contact with same id or admins can modify the data
    * @apiError (Not Found 404)    NotFound     Contact does not exist
    */
-  .put(authorize(LOGGED_USER), /* validate(replaceContact),*/ controller.replace)
-  
-  
-
+  .put(
+    authorize(LOGGED_USER),
+    /* validate(replaceContact),*/ controller.replace
+  );
 
 module.exports = router;

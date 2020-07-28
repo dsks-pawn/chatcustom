@@ -129,27 +129,26 @@ exports.create = async (req, res, next) => {
     // Nếu tin nhắn group thì conversation id = group id
     let conversationId = null;
     if (conversationType === "ChatGroup") {
-      // check group có tồn tại không? 
+      // check group có tồn tại không?
       const group = await ChatGroup.findById(req.body.receiver);
 
       // check user hiện tại có phải là member hay không?
       if (group && group.members.includes(req.user.id))
         conversationId = req.body.receiver;
-     
     } else if (conversationType === "User") {
-      // check người dùng tồn tại hay không 
+      // check người dùng tồn tại hay không
       const user = await User.findById(req.body.receiver);
-      if(user)conversationId = [sender, req.body.receiver].sort().join(".");
+      if (user) conversationId = [sender, req.body.receiver].sort().join(".");
     }
 
-    if (!conversationId){
-      // Nếu không tồn tại users hay group => return lỗi 
-       throw new APIError({
-         message: "Something went wrong",
-         status: httpStatus.BAD_REQUEST,
-       });
+    if (!conversationId) {
+      // Nếu không tồn tại users hay group => return lỗi
+      throw new APIError({
+        message: "Something went wrong",
+        status: httpStatus.BAD_REQUEST,
+      });
     }
-      const message = new Message({ ...req.body, sender, conversationId });
+    const message = new Message({ ...req.body, sender, conversationId });
     let savedMessage = await message.save();
 
     savedMessage = await savedMessage
@@ -209,7 +208,10 @@ exports.update = async (req, res, next) => {
 exports.list = async (req, res, next) => {
   try {
     let sender = req.user._id;
-    let personalMessages = await Message.listPersonal({ userId: sender, skip: req.query.pskip });
+    let personalMessages = await Message.listPersonal({
+      userId: sender,
+      skip: req.query.pskip,
+    });
 
     // Lấy danh sách chat nhóm
     let groupMessages = await ChatGroup.list({
@@ -301,11 +303,11 @@ exports.addPhotos = (req, res, next) => {
   photosUploadFile(req, res, async (err) => {
     try {
       if (!req.file) {
-      console.log(err);
-      throw new APIError({
-        message: err,
-        status: httpStatus.BAD_REQUEST,
-      });
+        console.log(err);
+        throw new APIError({
+          message: err,
+          status: httpStatus.BAD_REQUEST,
+        });
       }
       let outputFile = req.file.path + ".jpg";
 
@@ -336,11 +338,11 @@ exports.addFiles = (req, res, next) => {
   filesUpload(req, res, async (err) => {
     try {
       if (!req.file) {
-      console.log(err);
-      throw new APIError({
-        message: err,
-        status: httpStatus.BAD_REQUEST,
-      });
+        console.log(err);
+        throw new APIError({
+          message: err,
+          status: httpStatus.BAD_REQUEST,
+        });
       }
 
       let temp = {

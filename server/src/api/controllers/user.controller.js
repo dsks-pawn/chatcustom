@@ -7,8 +7,8 @@ const uuidv4 = require("uuid/v4");
 const multer = require("multer");
 const fsExtra = require("fs-extra");
 const APIError = require("../utils/APIError");
-const storageAvatar = require('../utils/storageAvatar')
-const ICETurnServer = require('../../config/ICETurnServer')
+const storageAvatar = require("../utils/storageAvatar");
+const ICETurnServer = require("../../config/ICETurnServer");
 const {
   avatarDirectory,
   avatarTypes,
@@ -75,7 +75,7 @@ exports.updatePassword = async (req, res, next) => {
       user = Object.assign(user, { password: newPassword });
       return user
         .save()
-        .then(() => res.json({message: "update succesfully"}))
+        .then(() => res.json({ message: "update succesfully" }))
         .catch((e) => next(e));
     }
     throw new APIError({
@@ -131,18 +131,18 @@ exports.list = async (req, res, next) => {
               return;
             }
           } else if (
-                   userItem.id.toString() == contactItem.contactId.toString()
-                 ) {
-                   // request
-                   if (!!contactItem.status) {
-                     // accepted
-                     tempItem.type = "contact";
-                     return;
-                   } else {
-                     tempItem.type = "requestSent";
-                     return;
-                   }
-                 }
+            userItem.id.toString() == contactItem.contactId.toString()
+          ) {
+            // request
+            if (!!contactItem.status) {
+              // accepted
+              tempItem.type = "contact";
+              return;
+            } else {
+              tempItem.type = "requestSent";
+              return;
+            }
+          }
         });
       }
       responseUsers.push(tempItem);
@@ -167,7 +167,6 @@ exports.remove = (req, res, next) => {
     .then(() => res.status(httpStatus.NO_CONTENT).end())
     .catch((e) => next(e));
 };
-
 
 // let avatarUploadFile = multer({
 //   storage: storageAvatar,
@@ -213,8 +212,8 @@ exports.updateAvatar = (req, res, next) => {
   });
 };
 
-exports.iceServerList = async (req, res, next)=>{
+exports.iceServerList = async (req, res, next) => {
   ICETurnServer()
     .then((iceServer) => res.json({ ice: iceServer }))
     .catch((err) => next(err));
-}
+};

@@ -40,10 +40,12 @@ const messageSchema = new mongoose.Schema(
       min: 1,
     },
     images: [String],
-    files:[{
-      name: String,
-      path: String
-    }],
+    files: [
+      {
+        name: String,
+        path: String,
+      },
+    ],
     conversationId: String,
   },
   {
@@ -66,7 +68,7 @@ messageSchema.method({
       "images",
       "type",
       "conversationType",
-      "files"
+      "files",
     ];
 
     fields.forEach((field) => {
@@ -122,7 +124,7 @@ messageSchema.statics = {
    * @param {number} limit - Limit number of messages to be returned.
    * @returns {Promise<Message[]>}
    */
-  async listPersonal({ limit = 12, skip=0, userId }) {
+  async listPersonal({ limit = 12, skip = 0, userId }) {
     return this.aggregate([
       {
         $match: {

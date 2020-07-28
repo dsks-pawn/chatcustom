@@ -31,9 +31,9 @@ let initSockets = (io) => {
     })
   );
   let clients = {};
-  console.log(clients)
+  console.log(clients);
   io.on("connection", async (socket) => {
-    try{
+    try {
       const user = await getUserInfo(socket.decoded_token.sub);
       if (user) {
         clients = pushSocketIdToArray(clients, user.id, socket.id);
@@ -83,8 +83,8 @@ let initSockets = (io) => {
       socket.on("--server-call-ended", (data) =>
         callEnded(io, data, clients, user)
       );
-    }catch(error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
   });
 };
