@@ -31,7 +31,7 @@ const SendVerificationEmail = ({ form }) => {
             <Content>
                 <div className="text-center mb-5">
                     <Link to="/forgot">
-                        <a className="brand mr-0">
+                        <a className="brand mr-0" href="# ">
                             <Triangle size={32} strokeWidth={1} />
                         </a>
                     </Link>

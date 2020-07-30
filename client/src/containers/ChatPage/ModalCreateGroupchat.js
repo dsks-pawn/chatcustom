@@ -67,6 +67,7 @@ function ModalCreateGroupchat({ visible, doToggle }) {
     };
     useEffect(() => {
         dispatch(contactActions.listContacts());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     if (!currentUser) return <span></span>;
     return (

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Icon, Collapse } from "antd";
-import Search from "antd/lib/input/Search";
+// import Search from "antd/lib/input/Search";
 import { useDispatch, useSelector } from "react-redux";
 import actions from "../actions";
 import selectors from "../selectors";
@@ -14,9 +14,9 @@ const ContactList = () => {
     const dispatch = useDispatch();
     const requests = useSelector(selectors.selectRequests);
     const requestsSent = useSelector(selectors.selectRequestsSent);
-    const handleSearch = (term) => {
-        dispatch(actions.list({ term }));
-    };
+    // const handleSearch = (term) => {
+    //     dispatch(actions.list({ term }));
+    // };
 
     // const searchbar = (
     //     <div className="py-3 px-3" style={{ backgroundColor: "#fff" }}>
@@ -29,6 +29,7 @@ const ContactList = () => {
         dispatch(actions.listRequestsSent());
 
         return () => {};
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-    Input,
+    // Input,
     Layout,
     Menu,
     Badge,
@@ -24,7 +24,7 @@ import layoutSelectors from "../Layout/selectors";
 import { getSetting, setSetting } from "../shared/settings";
 
 const { Sider, Header } = Layout;
-const { Search } = Input;
+// const { Search } = Input;
 
 function ChatSidebar() {
     const dispatch = useDispatch();

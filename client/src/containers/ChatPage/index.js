@@ -34,11 +34,13 @@ export default function ChatPage() {
         return () => {
             window.removeEventListener("resize", windowOnResize);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
         if (userId) {
             dispatch(actions.doFind(userId));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
 
     if (record) {
@@ -67,7 +69,7 @@ export default function ChatPage() {
                         }}
                     >
                         <Result
-                            icon={<img width="300" src="/logo-chat.png" />}
+                            icon={<img width="300" src="/logo-chat.png" alt="img" />}
                             title="Welcome to Awesome Chat"
                             subTitle="On Being Awesome"
                         />

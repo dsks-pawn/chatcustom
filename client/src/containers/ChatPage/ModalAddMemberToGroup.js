@@ -55,6 +55,7 @@ function ModalAddMemberToGroup({ visible, doToggle }) {
 
     useEffect(() => {
         dispatch(contactActions.listContacts())
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const renderUsers = (users) => {

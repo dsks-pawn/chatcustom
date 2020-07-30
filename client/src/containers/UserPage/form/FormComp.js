@@ -19,6 +19,7 @@ const FormComp = ({ form }) => {
 
     useEffect(() => {
         dispatch(actions.doFind(userId));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     let renderForm = () => {
