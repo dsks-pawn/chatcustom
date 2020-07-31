@@ -1,9 +1,9 @@
-const path = require("path");
+const path = require('path');
 
 // import .env variables
-require("dotenv-safe").load({
-  path: path.join(__dirname, "../../.env"),
-  sample: path.join(__dirname, "../../.env.example"),
+require('dotenv-safe').load({
+  path: path.join(__dirname, '../../.env'),
+  sample: path.join(__dirname, '../../.env.example'),
   allowEmptyValues: true,
 });
 
@@ -14,11 +14,11 @@ module.exports = {
   jwtExpirationInterval: process.env.JWT_EXPIRATION_MINUTES,
   mongo: {
     uri:
-      process.env.NODE_ENV === "test"
+      process.env.NODE_ENV === 'test'
         ? process.env.MONGO_URI_TESTS
         : process.env.MONGO_URI,
   },
-  logs: process.env.NODE_ENV === "production" ? "combined" : "dev",
+  logs: process.env.NODE_ENV === 'production' ? 'combined' : 'dev',
   emailConfig: {
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
@@ -26,10 +26,10 @@ module.exports = {
     password: process.env.EMAIL_PASSWORD,
   },
   avatarDirectory: process.env.AVATAR_DIRECTORY,
-  avatarTypes: ["image/png", "image/jpg", "image/jpeg"],
+  avatarTypes: ['image/png', 'image/jpg', 'image/jpeg'],
   avatarLimitSize: 8097152, // 1mb
   photoDirectory: process.env.PHOTOS_DIRECTORY,
-  photoTypes: ["image/png", "image/jpg", "image/jpeg", "image/gif"],
+  photoTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'],
   photoLimitSize: 8097152,
   fileDirectory: process.env.FILES_DIRECTORY,
   fileLimitSize: 8097152,

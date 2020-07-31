@@ -1,20 +1,20 @@
-const express = require("express");
-const validate = require("express-validation");
-const controller = require("../../controllers/contact.controller");
-const { authorize, ADMIN, LOGGED_USER } = require("../../middlewares/auth");
+const express = require('express');
+const validate = require('express-validation');
+const controller = require('../../controllers/contact.controller');
+const { authorize, ADMIN, LOGGED_USER } = require('../../middlewares/auth');
 const {
   createContact,
   deleteContact,
   updateContact,
-} = require("../../validations/contact.validation");
+} = require('../../validations/contact.validation');
 const router = express.Router();
 /** * Load contact when API with contactId route parameter is hit */ router.param(
-  "contactId",
+  'contactId',
   controller.load
 );
 
 router
-  .route("/")
+  .route('/')
   /**
    * @api {get} v1/contacts List Contacts
    * @apiDescription Get a list of contacts
@@ -110,7 +110,7 @@ router
   .patch(authorize(LOGGED_USER), validate(updateContact), controller.update);
 
 router
-  .route("/:contactId")
+  .route('/:contactId')
 
   /**
    * @api {get} v1/contacts/:id Get Contact

@@ -1,9 +1,9 @@
-const { emitNotifyToArray } = require("../helper");
+const { emitNotifyToArray } = require('../helper');
 
 let createGroup = (io, data, clients, user) => {
   data.members.forEach((item) => {
     if (clients[item]) {
-      emitNotifyToArray(clients, item, io, "res-create-group", data);
+      emitNotifyToArray(clients, item, io, 'res-create-group', data);
     }
   });
 };

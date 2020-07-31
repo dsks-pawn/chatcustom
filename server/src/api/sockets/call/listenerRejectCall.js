@@ -1,4 +1,4 @@
-const { emitNotifyToArray } = require("../helper");
+const { emitNotifyToArray } = require('../helper');
 
 let listenerRejectCall = (io, data, clients, user) => {
   // listener hủy cuộc gọi
@@ -9,7 +9,7 @@ let listenerRejectCall = (io, data, clients, user) => {
       clients,
       data.caller.id,
       io,
-      "server-caller-reject-call",
+      'server-caller-reject-call',
       data
     );
   }

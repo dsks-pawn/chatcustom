@@ -1,4 +1,4 @@
-const { emitNotifyToArray } = require("../helper");
+const { emitNotifyToArray } = require('../helper');
 
 let callerRequestCall = (io, data, clients, user) => {
   if (clients[data.listener.id]) {
@@ -7,7 +7,7 @@ let callerRequestCall = (io, data, clients, user) => {
       clients,
       data.listener.id,
       io,
-      "server-listener-request-call",
+      'server-listener-request-call',
       data
     );
   }

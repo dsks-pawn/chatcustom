@@ -1,7 +1,7 @@
-const express = require("express");
-const validate = require("express-validation");
-const controller = require("../../controllers/auth.controller");
-const oAuthLogin = require("../../middlewares/auth").oAuth;
+const express = require('express');
+const validate = require('express-validation');
+const controller = require('../../controllers/auth.controller');
+const oAuthLogin = require('../../middlewares/auth').oAuth;
 const {
   login,
   register,
@@ -9,17 +9,17 @@ const {
   refresh,
   sendPasswordReset,
   passwordReset,
-} = require("../../validations/auth.validation");
+} = require('../../validations/auth.validation');
 
 const router = express.Router();
 
 router
-  .route("/register")
+  .route('/register')
   // Đăng kí
   .post(validate(register), controller.register);
 
 router
-  .route("/login")
+  .route('/login')
   // Đăng nhập
   .post(validate(login), controller.login);
 
@@ -42,14 +42,14 @@ router
  * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
  * @apiError (Unauthorized 401)  Unauthorized     Incorrect email or refreshToken
  */
-router.route("/refresh-token").post(validate(refresh), controller.refresh);
+router.route('/refresh-token').post(validate(refresh), controller.refresh);
 
 router
-  .route("/send-password-reset")
+  .route('/send-password-reset')
   .post(validate(sendPasswordReset), controller.sendPasswordReset);
 
 router
-  .route("/reset-password")
+  .route('/reset-password')
   .post(validate(passwordReset), controller.resetPassword);
 
 /**
@@ -71,8 +71,8 @@ router
  * @apiError (Unauthorized 401)  Unauthorized    Incorrect access_token
  */
 router
-  .route("/facebook")
-  .post(validate(oAuth), oAuthLogin("facebook"), controller.oAuth);
+  .route('/facebook')
+  .post(validate(oAuth), oAuthLogin('facebook'), controller.oAuth);
 
 /**
  * @api {post} v1/auth/google Google Login
@@ -93,7 +93,7 @@ router
  * @apiError (Unauthorized 401)  Unauthorized    Incorrect access_token
  */
 router
-  .route("/google")
-  .post(validate(oAuth), oAuthLogin("google"), controller.oAuth);
+  .route('/google')
+  .post(validate(oAuth), oAuthLogin('google'), controller.oAuth);
 
 module.exports = router;

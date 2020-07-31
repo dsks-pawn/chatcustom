@@ -1,7 +1,7 @@
-const multer = require("multer");
-const uuidv4 = require("uuid/v4");
-const path = require("path");
-const { fileDirectory, fileLimitSize } = require("../../config/vars");
+const multer = require('multer');
+const uuidv4 = require('uuid/v4');
+const path = require('path');
+const { fileDirectory, fileLimitSize } = require('../../config/vars');
 module.exports = {
   storage: new multer.diskStorage({
     destination: (req, file, callback) => {
@@ -14,8 +14,8 @@ module.exports = {
         path.extname(file.originalname).toLowerCase()
       );
       if (extname) {
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        return callback(null, uniqueSuffix + "-" + file.originalname);
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        return callback(null, uniqueSuffix + '-' + file.originalname);
       }
       callback(
         `File upload only supports the following filetypes - ` + fileTypes,

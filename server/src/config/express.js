@@ -11,22 +11,21 @@ const { logs } = require('./vars');
 const strategies = require('./passport');
 const error = require('../api/middlewares/error');
 const http = require('http');
-const socketio = require("socket.io");
+const socketio = require('socket.io');
 const initSockets = require('../api/sockets');
-const path = require('path')
+const path = require('path');
 /**
-* Express instance
-* @public
-*/
+ * Express instance
+ * @public
+ */
 const app = express();
 
 //static file
-app.use("/public", express.static(path.join(__dirname, "../../public")));
+app.use('/public', express.static(path.join(__dirname, '../../public')));
 
 // Init server with socket.io and express app
 let server = http.createServer(app);
-let io = socketio(server, { path: "/chat/socket.io" });
-
+let io = socketio(server, { path: '/chat/socket.io' });
 
 // request logging. dev: console | production: file
 app.use(morgan(logs));
@@ -55,8 +54,7 @@ passport.use('jwt', strategies.jwt);
 // passport.use('google', strategies.google);
 
 // mount api v1 routes
-app.use("/asapi", routes);
-
+app.use('/asapi', routes);
 
 // Init all sockets
 initSockets(io);

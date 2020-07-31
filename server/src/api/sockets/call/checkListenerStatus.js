@@ -1,4 +1,4 @@
-const { emitNotifyToArray } = require("../helper");
+const { emitNotifyToArray } = require('../helper');
 
 let checkListenerStatus = (io, data, clients, user) => {
   // b02. Trả về trạng thái của listener cho caller
@@ -6,10 +6,10 @@ let checkListenerStatus = (io, data, clients, user) => {
     clients,
     data.caller.id,
     io,
-    "server-caller-listener-status",
+    'server-caller-listener-status',
     {
       ...data,
-      status: clients[data.listener.id] ? "online" : "offline",
+      status: clients[data.listener.id] ? 'online' : 'offline',
     }
   );
 
@@ -19,7 +19,7 @@ let checkListenerStatus = (io, data, clients, user) => {
       clients,
       data.listener.id,
       io,
-      "server-listener-request-peer-id",
+      'server-listener-request-peer-id',
       data
     );
   }

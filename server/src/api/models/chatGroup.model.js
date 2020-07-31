@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const APIError = require("../utils/APIError");
-const httpStatus = require("http-status");
+const mongoose = require('mongoose');
+const APIError = require('../utils/APIError');
+const httpStatus = require('http-status');
 let schema = mongoose.Schema;
 
 let chatGroupSchema = new schema(
@@ -25,12 +25,12 @@ chatGroupSchema.method({
   transform() {
     const transformed = {};
     const fields = [
-      "id",
-      "picture",
-      "name",
-      "members",
-      "createdAt",
-      "updatedAt",
+      'id',
+      'picture',
+      'name',
+      'members',
+      'createdAt',
+      'updatedAt',
     ];
 
     fields.forEach((field) => {
@@ -63,7 +63,7 @@ chatGroupSchema.statics = {
       }
 
       throw new APIError({
-        message: "ChatGroup does not exist",
+        message: 'ChatGroup does not exist',
         status: httpStatus.NOT_FOUND,
       });
     } catch (error) {
@@ -94,4 +94,4 @@ chatGroupSchema.statics = {
 /**
  * @typedef ChatGroup
  */
-module.exports = mongoose.model("ChatGroup", chatGroupSchema);
+module.exports = mongoose.model('ChatGroup', chatGroupSchema);

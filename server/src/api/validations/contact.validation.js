@@ -20,8 +20,8 @@ module.exports = {
     query: {
       user: Joi.string()
         .regex(/^[a-fA-F0-9]{24}$/)
-        .required()
-    }
+        .required(),
+    },
   },
 
   // PUT /v1/contacts/:contactId
@@ -49,14 +49,14 @@ module.exports = {
     query: {
       user: Joi.string()
         .regex(/^[a-fA-F0-9]{24}$/)
-        .required()
-    }
+        .required(),
+    },
   },
   deleteContact: {
     query: {
       user: Joi.string()
         .regex(/^[a-fA-F0-9]{24}$/)
-        .required()
-    }
-  }
+        .required(),
+    },
+  },
 };

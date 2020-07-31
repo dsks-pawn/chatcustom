@@ -1,5 +1,5 @@
-const Joi = require("joi");
-const Message = require('../models/message.model')
+const Joi = require('joi');
+const Message = require('../models/message.model');
 module.exports = {
   createMessage: {
     body: {
